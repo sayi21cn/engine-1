@@ -933,7 +933,7 @@ fn redis_v5_deploy_a_working_environment() {
     let context = context();
     const test_name: &str = "redis_v6_dev";
     let environment = test_utilities::aws::working_minimal_environment(&context);
-    test_redis_configuration(context, environment, "5.0");
+    test_redis_configuration(context, environment, "5");
 }
 
 #[test]
@@ -941,7 +941,7 @@ fn redis_v6_deploy_a_working_environment() {
     let context = context();
     const test_name: &str = "redis_v6_0_dev";
     let environment = test_utilities::aws::working_minimal_environment(&context);
-    test_redis_configuration(context, environment, "6.0");
+    test_redis_configuration(context, environment, "6");
 }
 
 // test Redis 5.0 with production environment (Elasticache)
