@@ -234,7 +234,7 @@ impl<'a> DOKS<'a> {
                 min_size: nodes.len().to_string(),
             })
             .collect::<Vec<WorkerNodeDataTemplate>>();
-        context.insert("oks_worker_nodes", &worker_nodes);
+        context.insert("doks_worker_nodes", &worker_nodes);
 
         context
     }
