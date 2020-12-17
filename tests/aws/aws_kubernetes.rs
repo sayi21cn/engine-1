@@ -1,5 +1,5 @@
 extern crate test_utilities;
-use self::test_utilities::aws::{aws_access_key_id, aws_default_region, aws_secret_access_key};
+use self::test_utilities::aws::{aws_access_key_id, aws_default_region, aws_secret_key};
 use self::test_utilities::cloudflare::dns_provider_cloudflare;
 use self::test_utilities::utilities::{generate_id, init};
 use gethostname;

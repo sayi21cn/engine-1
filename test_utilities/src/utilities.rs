@@ -3,7 +3,7 @@ use curl::Error;
 use rand::distributions::Alphanumeric;
 use rand::{thread_rng, Rng};
 
-use crate::aws::{aws_access_key_id, aws_default_region, aws_secret_access_key, KUBE_CLUSTER_ID};
+use crate::aws::{aws_access_key_id, aws_default_region, aws_secret_key, KUBE_CLUSTER_ID};
 use chrono::Utc;
 use dirs::home_dir;
 use qovery_engine::build_platform::local_docker::LocalDocker;
@@ -107,7 +107,7 @@ pub fn is_pod_restarted_aws_env(
         &environment_check.id.clone(),
     );
     let access_key = aws_access_key_id();
-    let secret_key = aws_secret_access_key();
+    let secret_key = aws_secret_key();
     let aws_credentials_envs = vec![
         ("AWS_ACCESS_KEY_ID", access_key.as_str()),
         ("AWS_SECRET_ACCESS_KEY", secret_key.as_str()),
@@ -117,7 +117,7 @@ pub fn is_pod_restarted_aws_env(
         "/tmp",
         KUBE_CLUSTER_ID,
         aws_access_key_id().as_str(),
-        aws_secret_access_key().as_str(),
+        aws_secret_key().as_str(),
         aws_default_region().as_str(),
     );
     match kubernetes_config {
