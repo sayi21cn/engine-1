@@ -8,6 +8,7 @@ use tera::Context as TeraContext;
 
 use crate::cloud_provider::aws::common::kubernetes_config_path;
 use crate::cloud_provider::aws::kubernetes::node::Node;
+use crate::cloud_provider::aws::kubernetes::roles::{get_default_roles_to_create, Role};
 use crate::cloud_provider::aws::{common, AWS};
 use crate::cloud_provider::environment::Environment;
 use crate::cloud_provider::kubernetes::{
@@ -20,7 +21,7 @@ use crate::cmd::kubectl::{kubectl_exec_delete_namespace, kubectl_exec_get_all_na
 use crate::constants::{AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY};
 use crate::deletion_utilities::{get_firsts_namespaces_to_delete, get_qovery_managed_namespaces};
 use crate::dns_provider::DnsProvider;
-use crate::error::{cast_simple_error_to_engine_error, EngineError, EngineErrorCause};
+use crate::error::{cast_simple_error_to_engine_error, EngineError, EngineErrorCause, SimpleError};
 use crate::fs::workspace_directory;
 use crate::models::{
     Context, Listener, Listeners, ListenersHelper, ProgressInfo, ProgressLevel, ProgressScope,
@@ -30,6 +31,7 @@ use crate::unit_conversion::{cpu_string_to_float, ki_to_mi};
 use crate::{dns_provider, s3};
 
 pub mod node;
+pub mod roles;
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Options {
@@ -502,6 +504,15 @@ impl<'a> Kubernetes for EKS<'a> {
             )),
             self.context.execution_id(),
         ));
+
+        // create AWS IAM roles
+        let default_role_to_create = get_default_roles_to_create();
+        for role in default_role_to_create {
+            match role.create_service_linked_role() {
+                Ok(_) => info!("Role {}, is successfully linked"),
+                Err(_) => error!("Role {}, isn't well linked"),
+            }
+        }
 
         let temp_dir = workspace_directory(
             self.context.workspace_root_dir(),
